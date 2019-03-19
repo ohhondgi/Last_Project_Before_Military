@@ -9,14 +9,59 @@
 </head>
 
 <body>
+
+    <style>
+        td.details-control {
+            background: url('../resources/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('../resources/details_close.png') no-repeat center center;
+        }
+    </style>
+
     <section>
         <p>
             <!-- form을 사용할것인가? -->
-            <!-- placeholder만 가운데정렬. search는 정렬 X -->
-            <input type="search" name="input" placeholder="유저이메일 or 시리얼" autocomplete="on" autofocus>
-            <!-- <input type="submit" name="" value=""> -->
-            <input type="button" name="" value="검색" onclick="alert('미니정보 or 유저정보 검색!')">
+            <form class="" action="index.html" method="post">
 
+                <input type="radio" name="chk_search_type" id="email_search" value="유저이메일" checked onclick="to_email()">유저이메일
+                <input type="radio" name="chk_search_type" id="serial_search" value="시리얼" onclick="to_serial()">시리얼
+                <input type="email" name="user_input" placeholder="유저이메일 or 시리얼 입력" autocomplete="on" autofocus>
+
+                <!-- changes the type of user_input -->
+                <script type="text/javascript">
+                    function changeInputType(oldObject, oType) {
+                        var newObject = document.createElement('input');
+                        newObject.type = oType;
+                        if (oldObject.value) newObject.value = oldObject.value;
+                        if (oldObject.name) newObject.name = oldObject.name;
+                        if (oldObject.id) newObject.id = oldObject.id;
+                        oldObject.parentNode.replaceChild(newObject, oldObject);
+                        return newObject;
+                    }
+
+                    function to_email() {
+                        changeInputType(document.getElementsByName('user_input')[0], "email");
+                    }
+
+                    function to_serial() {
+                        // document.getElementById('input').type = "text";
+                        // document.getElementsByName('user_input')[0].type = "text";
+                        changeInputType(document.getElementsByName('user_input')[0], "text");
+                    }
+                </script>
+
+                <!-- 검색 버튼 -->
+                <input type="submit" name="" value="검색">
+
+            </form>
+
+            <script>
+                var str = 'Mozila'
+                console.log(str);
+            </script>
         </p>
     </section>
 
@@ -31,9 +76,32 @@
     <section>
         <p>
             표(테스트 유저 제외)
-            <input type="button" name="AS_regist" value="AS등록버튼"><br><br><br>
+            <input type="button" name="AS_regist" value="AS등록버튼"><br><br>
 
-            datatable이 들어갈 자리
+
+            ------datatable이 들어갈 자리------
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Office</th>
+                        <th>Salary</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Office</th>
+                        <th>Salary</th>
+                    </tr>
+                </tfoot>
+            </table>
+
+            ------datatable이 들어갈 자리------
         </p>
     </section>
 
