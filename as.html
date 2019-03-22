@@ -74,7 +74,7 @@
 
     <section>
         <p>
-            미니정보 or 유저정보
+            미니정보 or 유저정보<br><br><br><br><br><br><br><br>
         </p>
     </section>
 
@@ -83,11 +83,10 @@
     <section>
         <p>
             표(테스트 유저 제외)
-            <input type="button" name="AS_regist" value="AS등록버튼"><br><br>
+            <input type="button" name="AS_regist_button" value="AS_regist"><br><br>
 
-
-            ------datatable이 들어갈 자리------
-            <table id="example" class="display" style="width:100%">
+            <!-- table의 양 끝을 나타내는 raw html table -->
+            <table id="example" class="display" style="width:100%" cellspacing="0" width="100%">
                 <thead>
                     <tr>
                         <th></th>
@@ -108,9 +107,75 @@
                 </tfoot>
             </table>
 
-            ------datatable이 들어갈 자리------
+            <script>
+                /* Formatting function for row details - modify as you need */
+                function format(d) {
+                    // `d` is the original data object for the row
+                    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                        '<tr>' +
+                        '<td>Full name:</td>' +
+                        '<td>' + d.name + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>Extension number:</td>' +
+                        '<td>' + d.extn + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>Extra info:</td>' +
+                        '<td>And any further details here (images etc)...</td>' +
+                        '</tr>' +
+                        '</table>';
+                }
+
+                $(document).ready(function() {
+                    var table = $('#example').DataTable({
+                        // "ajax": "../ajax/data/objects.txt",
+                        "ajax": "objects.txt", //  for test.
+                        "columns": [{
+                                "className": 'details-control',
+                                "orderable": false,
+                                "data": null,
+                                "defaultContent": ''
+                            },
+                            {
+                                "data": "name"
+                            },
+                            {
+                                "data": "position"
+                            },
+                            {
+                                "data": "office"
+                            },
+                            {
+                                "data": "salary"
+                            }
+                        ],
+                        "order": [
+                            [1, 'asc']
+                        ]
+                    });
+
+                    // Add event listener for opening and closing details
+                    $('#example tbody').on('click', 'td.details-control', function() {
+                        var tr = $(this).closest('tr');
+                        var row = table.row(tr);
+
+                        if (row.child.isShown()) {
+                            // This row is already open - close it
+                            row.child.hide();
+                            tr.removeClass('shown');
+                        } else {
+                            // Open this row
+                            row.child(format(row.data())).show();
+                            tr.addClass('shown');
+                        }
+                    });
+                });
+            </script>
         </p>
     </section>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 
 </body>
 
