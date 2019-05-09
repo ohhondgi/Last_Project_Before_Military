@@ -27,14 +27,14 @@
     <section>
         <p>
             <!-- form -->
-            <form name="fr" class="" action="post_user_input.php" method="post" onsubmit="return isBlankCheck()">
+            <form name="fr" id="login" action="javascript:isBlankCheck()">
 
                 <input type="radio" name="chk_search_type" id="email_search" value="유저이메일" checked onclick="to_email()">유저이메일
                 <input type="radio" name="chk_search_type" id="serial_search" value="시리얼" onclick="to_serial()">시리얼
                 <input type="email" name="user_input" placeholder="유저이메일 or 시리얼 입력" autocomplete="on" autofocus>
 
                 <!-- 검색 버튼 -->
-                <input type="submit" name="" value="검색">
+                <input type="submit" id="sendInfo" value="검색">
 
                 <!-- changes the type of user_input (email <-> text) -->
                 <script type="text/javascript">
@@ -58,15 +58,56 @@
                         fr.user_input.focus();
                     }
 
-                    function isBlankCheck() { // checks user_input. If blank, make an alert message
-                        if (fr.user_input.value === "") {
-                            alert('입력을 하신 후에 검색을 누르세요.');
-                            return false;
-                        }
 
-                        return true;
-                    }
+                    // function checkInformation() { // check email or serial
+                    //   var checked_value = $('input:radio[name=chk_search_type]:checked').val();
+                    //   if (checked_value === "유저이메일") {
+                    //     return "email";
+                    //   } else
+                    //     return "serial";
+                    // }
+                    //
+                    // function sendInformation() {
+                    //   var address = "https://us-central1-firebase-diveroid.cloudfunctions.net/api_as/as/product/mini/" + fr.user_input.value;
+                    //   $.ajax({
+                    //     url: address,
+                    //     cache: false,
+                    //     dataType: "json",
+                    //     success: function(data) {
+                    //       var key = data[0];
+                    //       alert("hello");
+                    //     },
+                    //     error: function() {
+                    //       alert("error");
+                    //     }
+                    //   })
+                    // }
+                    //
+                    // $("#sendInfo").click(function() {
+                    //   sendInformation();
+                    // })
                 </script>
+
+                <!-- <script>
+          $.getJSON("http://localhost/as%20%EA%B4%80%EB%A6%AC%20%ED%8E%98%EC%9D%B4%EC%A7%80/data/data.json", function(data) {
+
+            var newContent = '';
+            newContent += '<div id="tours">';
+            newContent += '<h1>Guided Tours</h1>';
+            newContent += '<ul>';
+            for (var i = 0; i < data.tours.length; i++) {
+
+              newContent += '<li class="' + data.tours[i].region + ' tour">';
+              newContent += '<h2>' + data.tours[i].location + '</h2>';
+              newContent += '<span class="details">' + data.tours[i].details + '</span>';
+              newContent += '<button class="book">Book Now</button>';
+              newContent += '</li>';
+            }
+            newContent += '</ul></div>';
+
+            $("#content").html(newContent);
+          });
+        </script> -->
 
             </form>
         </p>
@@ -78,7 +119,6 @@
         </p>
     </section>
 
-    <br><br><br>
 
     <section>
         <p>
@@ -86,74 +126,84 @@
             <input type="button" name="AS_regist_button" value="AS등록버튼">
 
             <!-- table의 양 끝을 나타내는 raw html table -->
-            <table id="example" class="display" style="width:100%" cellspacing="0" width="100%">
+            <table id="example" class="display" style="width:100%" cellspacing="0" width="100%" border="1">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th>Salary</th>
+                        <th>최초 사용일</th>
+                        <th>최근 사용일</th>
+                        <th>이름</th>
+                        <th>이메일</th>
+                        <th>UID</th>
                     </tr>
                 </thead>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th>Salary</th>
-                    </tr>
-                </tfoot>
             </table>
 
             <script>
                 /* Formatting function for row details - modify as you need */
-                function format(d) {
+                function format(md) {
                     // `d` is the original data object for the row
-                    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                    return '<table cellpadding="5" cellspacing="0" border="1">' +
                         '<tr>' +
-                        '<td>Full name:</td>' +
-                        '<td>' + d.name + '</td>' +
+                        '<td>씨리얼 번호</td>' +
+                        '<td>최초 사용일</td>' +
+                        '<td>최근 사용일</td>' +
+                        '<td>최근 AS 날짜</td>' +
+                        '<td>연동 Trello 링크</td>' +
+                        '<td>최근 AS진행 고객</td>' +
                         '</tr>' +
                         '<tr>' +
-                        '<td>Extension number:</td>' +
-                        '<td>' + d.extn + '</td>' +
-                        '</tr>' +
-                        '<tr>' +
-                        '<td>Extra info:</td>' +
-                        '<td>And any further details here (images etc)...</td>' +
+                        '<td>' + md.serial + '</td>' +
+                        '<td>' + md.First_use_day + '</td>' +
+                        '<td>' + md.Recently_used + '</td>' +
+                        '<td>' + md.Recently_AS_day + '</td>' +
+                        '<td>' + md.TrelloLink + '</td>' +
+                        '<td>' + md.Recently_AS_person + '</td>' +
                         '</tr>' +
                         '</table>';
                 }
 
-                $(document).ready(function() {
+                var columnList = ['firstConnectDate', 'recentUsedDate', 'fbName', 'fbEmail', 'userID'];
+
+                function getColumnTable() {
+                    var cl = [{
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    }];
+                    for (var i = 0; i < columnList.length; i++)
+                        cl.push({'data':columnList[i]});
+                    return cl;
+                }
+
+                function dataColumnChecking(json) {
+                    for (var i = 0; i < columnList.length; i++) {
+                        if (!json[columnList[i]]) json[columnList[i]] = '';
+                    }
+                }
+
+                function receiveData() {
+                    var address = "https://us-central1-firebase-diveroid.cloudfunctions.net/api_as/as/product/mini/" + fr.user_input.value;
                     var table = $('#example').DataTable({
                         // "ajax": "../ajax/data/objects.txt",
-                        "ajax": "objects.txt", //  for test.
-                        "columns": [{
-                                "className": 'details-control',
-                                "orderable": false,
-                                "data": null,
-                                "defaultContent": ''
-                            },
-                            {
-                                "data": "name"
-                            },
-                            {
-                                "data": "position"
-                            },
-                            {
-                                "data": "office"
-                            },
-                            {
-                                "data": "salary"
+                        "ajax": {
+                            "url": address,
+                            "dataSrc": function(json) {
+                                var result = [];
+                                var key = Object.keys(json);
+                                for (var i = 0, ien = key.length; i < ien; i++) {
+                                    dataColumnChecking(json[key[i]]);
+                                    result.push( json[key[i]] );
+                                }
+                                return result;
                             }
-                        ],
+                        },
+                        "columns": getColumnTable(),
                         "order": [
                             [1, 'asc']
                         ]
-                    });
+                    })
 
                     // Add event listener for opening and closing details
                     $('#example tbody').on('click', 'td.details-control', function() {
@@ -170,11 +220,20 @@
                             tr.addClass('shown');
                         }
                     });
-                });
+                }
+
+                function isBlankCheck() { // checks user_input. If blank, make an alert message
+                    if (fr.user_input.value === "") {
+                        alert('입력을 하신 후에 검색을 누르세요.');
+                        return false;
+                    } else {
+                        receiveData();
+                        return true;
+                    }
+                }
             </script>
         </p>
     </section>
-
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 
 </body>

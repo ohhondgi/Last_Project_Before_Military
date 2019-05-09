@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>  - css 파일 추가
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="jquery_dataTables_min_css.css">
+
+</head>
+# jacol
+
+<body>
+    <!-- css -->
+    <style>
+        td.details-control {
+            background: url('https://datatables.net/examples/resources/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
+        }
+    </style>
+
+    <!-- html_data_load -->  <!-- w3.js 에서 함수를 사용하고, 이 함수를 이용해서 html형식으로 데이터를 가져옴. ajax로 하게되면 검토-->
+    <script type="text/javascript" src="w3.js"></script>
+    <div w3-include-html="data.html"></div>
+    <script>
+        includeHTML();
+    </script>
+
+
+    <!-- js -->
+    <script type="text/javascript">
+        function format(value) {
+            return '<div>Hidden Value: ' + value + '</div>'; <!--  -->
+        }
+        $(document).ready(function() {
+            var table = $('#example').DataTable({});
+
+            // Add event listener for opening and closing details
+            $('#example').on('click', 'td.details-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child(format(tr.data('child-value'))).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+    </script>
+
+    <!-- <script>
+        /* Formatting function for row details - modify as you need */
+        function format(d) {
+            // `d` is the original data object for the row
+            return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                '<tr>' +
+                '<td>Full name:</td>' +
+                '<td>' + d.name + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>Extension number:</td>' +
+                '<td>' + d.extn + '</td>' +
+                '</tr>' +
+                '<tr>' +
+                '<td>Extra info:</td>' +
+                '<td>And any further details here (images etc)...</td>' +
+                '</tr>' +
+                '</table>';
+        }
+
+        $(document).ready(function() {
+            var table = $('#example').DataTable({
+                "ajax": "../ajax/data/objects.txt",
+                "columns": [{
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+                    {
+                        "data": "name"
+                    },
+                    {
+                        "data": "position"
+                    },
+                    {
+                        "data": "office"
+                    },
+                    {
+                        "data": "salary"
+                    }
+                ],
+                "order": [
+                    [1, 'asc']
+                ]
+            });
+
+            // Add event listener for opening and closing details
+            $('#example tbody').on('click', 'td.details-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+    </script> -->
+
+    <!--
+<script type="text/javascript">
+
+ function format(value) {
+     return '<div>Hidden Value: ' + value + '</div>';
+ }
+ $(document).ready(function () {
+     var table = $('#example').DataTable({});
+
+     // Add event listener for opening and closing details
+     $('#example').on('click', 'td.details-control', function () {
+         var tr = $(this).closest('tr');
+         var row = table.row(tr);
+
+         if (row.child.isShown()) {
+             // This row is already open - close it
+             row.child.hide();
+             tr.removeClass('shown');
+         } else {
+             // Open this row
+             row.child(format(tr.data('child-value'))).show();
+             tr.addClass('shown');
+         }
+     });
+ });
+
+</script>
+ -->
+    <!-- js2 -->
+    <script type="text/javascript" src="script2.js"></script>
+
+    <!-- js3 -->
+    <script type="text/javascript" src="script3.js"></script>
+
+
+</html>
